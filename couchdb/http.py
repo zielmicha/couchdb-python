@@ -97,7 +97,7 @@ if sys.version < '2.7':
 
         Based on code originally copied from Python 2.7's httplib module.
         """
-        
+
         def endheaders(self, message_body=None):
             if self.__dict__['_HTTPConnection__state'] == _CS_REQ_STARTED:
                 self.__dict__['_HTTPConnection__state'] = _CS_REQ_SENT
@@ -262,7 +262,9 @@ class Session(object):
 
         if (body is not None and not isinstance(body, basestring) and
                 not hasattr(body, 'read')):
-            body = json.encode(body).encode('utf-8')
+            body = json.encode(body)
+            if isinstance(body, unicode):
+                body = body.encode('utf-8')
             headers.setdefault('Content-Type', 'application/json')
 
         if body is None:
@@ -553,7 +555,7 @@ class Resource(object):
 def extract_credentials(url):
     """Extract authentication (user name and password) credentials from the
     given URL.
-    
+
     >>> extract_credentials('http://localhost:5984/_config/')
     ('http://localhost:5984/_config/', None)
     >>> extract_credentials('http://joe:secret@localhost:5984/_config/')
@@ -648,4 +650,3 @@ def urljoin(base, *path, **query):
         retval.extend(['?', urlencode(params)])
 
     return ''.join(retval)
-
